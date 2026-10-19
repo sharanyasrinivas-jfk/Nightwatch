@@ -1,66 +1,55 @@
-# StreamFlix – Netflix Clone (React + Django)
+# Nightwatch – a thrillers-only streaming app (React + Django)
 
-Full-stack streaming-site clone for learning. **Original placeholder artwork only** – no Netflix assets.
-
-| Layer    | Tech                                              |
-|----------|---------------------------------------------------|
-| Frontend | HTML, CSS, JavaScript (async/await), React 18 + hooks, Vite |
-| Backend  | Python, Django 5, Django REST Framework, Token auth |
-| Database | SQLite (default)                                  |
-| Tooling  | Git                                               |
+Original placeholder artwork and fictional titles – no Netflix assets.
 
 ## Features
-- Register / login (token authentication)
-- Hero banner + genre rows (horizontal scroll)
-- Search and genre filter
-- Movie details modal with trailer player
-- "My List" saved per user
-- Responsive layout (mobile → desktop)
+- Six thriller styles: Psychological, Crime, Mystery, Neo-Noir, Spy, Survival
+- **Tension meter** (1–5) on every film, plus sort by tension / newest / most watched
+- Rotating hero spotlight, **Top 10 this week**, "Edge of your seat" shelf
+- **Continue watching** – built-in video player saves and resumes your position
+- My List, thumbs up/down, "more like this", search (title, director, cast)
+- Token login/register, loading skeletons, toasts, responsive, keyboard accessible
+
+## Stack
+React 18 + Vite · Django 5 + Django REST Framework · SQLite · Git
 
 ## Run the backend
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+source venv/bin/activate            # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+python manage.py makemigrations movies
 python manage.py migrate
-python manage.py seed           # loads sample movies
-python manage.py createsuperuser  # optional, for /admin
-python manage.py runserver      # http://localhost:8000
+python manage.py seed
+python manage.py runserver          # http://localhost:8000
 ```
+Optional: `python manage.py createsuperuser`, then add films at /admin.
+Run tests: `python manage.py test`
 
 ## Run the frontend
 ```bash
 cd frontend
 npm install
-npm run dev                     # http://localhost:5173 (proxies /api to :8000)
+npm run dev                         # http://localhost:5173
 ```
 
 ## API
-| Method | URL                    | Auth | Purpose                      |
-|--------|------------------------|------|------------------------------|
-| POST   | /api/auth/register/    | no   | `{username,password}` → token |
-| POST   | /api/auth/login/       | no   | `{username,password}` → token |
-| GET    | /api/movies/?q=&genre= | no   | list / search movies         |
-| GET    | /api/mylist/           | yes  | my saved movies              |
-| POST   | /api/mylist/           | yes  | `{movie_id}` toggles save    |
+| Method | URL | Auth | Purpose |
+|---|---|---|---|
+| POST | /api/auth/register/, /api/auth/login/ | no | returns `{token, username}` |
+| GET | /api/movies/?q=&subgenre=&sort=tension\|new\|top&limit= | no | catalogue |
+| GET | /api/me/ | yes | saved ids + reactions |
+| GET/POST | /api/mylist/ | yes | list / toggle `{movie_id}` |
+| GET/POST | /api/progress/ | yes | continue watching / save `{movie_id, seconds, duration}` |
+| POST | /api/react/ | yes | `{movie_id, value: 1 \| -1 \| 0}` |
 
-## Git workflow
+## Using your own videos and posters
+In `/admin`, edit a Movie and set **Video url** to a direct `.mp4` link and the poster/backdrop URLs.
+Only use video and images you have the rights to.
+
+## Git
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
 git remote add origin <your-repo-url>
 git push -u origin main
 ```
-Use feature branches (`git checkout -b feature/search`) and small commits.
-
-## Project structure
-```
-backend/   Django project (netflix_backend) + app (movies)
-frontend/  React app (src/components, src/pages)
-```
-
-## Next steps
-Add tests, pagination, profiles, real video hosting, Docker, CI.

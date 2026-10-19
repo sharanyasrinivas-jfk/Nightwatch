@@ -13,7 +13,5 @@ export default function App() {
     setSession(s);
   };
 
-  return session
-    ? <Home session={session} onLogout={() => save(null)} />
-    : <Login onAuth={save} />;
+  return session ? <Home session={session} onLogout={() => save(null)} /> : <Login onAuth={save} />;
 }

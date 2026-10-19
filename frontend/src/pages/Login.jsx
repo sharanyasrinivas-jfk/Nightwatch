@@ -13,8 +13,7 @@ export default function Login({ onAuth }) {
     setBusy(true);
     setError("");
     try {
-      const data = await (mode === "login" ? api.login : api.register)(username, password);
-      onAuth(data);
+      onAuth(await (mode === "login" ? api.login : api.register)(username, password));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -22,31 +21,33 @@ export default function Login({ onAuth }) {
     }
   }
 
+  const login = mode === "login";
   return (
     <main className="auth">
-      <div className="auth-brand">STREAMFLIX</div>
-      <form className="auth-card" onSubmit={submit}>
-        <h1>{mode === "login" ? "Sign in" : "Create account"}</h1>
-        {error && <p className="error" role="alert">{error}</p>}
-        <label>
-          Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required autoComplete="username" />
-        </label>
-        <label>
-          Password
-          <input type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)}
-                 required autoComplete={mode === "login" ? "current-password" : "new-password"} />
-        </label>
-        <button className="btn btn-primary" disabled={busy}>
-          {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Sign up"}
-        </button>
-        <p className="switch">
-          {mode === "login" ? "New here?" : "Already a member?"}{" "}
-          <button type="button" className="link" onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}>
-            {mode === "login" ? "Create an account" : "Sign in"}
+      <span className="logo auth-logo">Nightwatch</span>
+      <section className="auth-card">
+        <h1>{login ? "Welcome back." : "Join the watch."}</h1>
+        <p className="muted">{login ? "Sign in to pick up where you left off." : "Thrillers only. Lights low."}</p>
+        <form onSubmit={submit}>
+          {error && <p className="error" role="alert">{error}</p>}
+          <label>Username
+            <input value={username} onChange={(e) => setUsername(e.target.value)} required autoComplete="username" />
+          </label>
+          <label>Password
+            <input type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} required
+                   autoComplete={login ? "current-password" : "new-password"} />
+          </label>
+          <button className="btn btn-primary" disabled={busy}>
+            {busy ? "One moment…" : login ? "Sign in" : "Create account"}
+          </button>
+        </form>
+        <p className="muted">
+          {login ? "New here?" : "Already a member?"}{" "}
+          <button className="link" onClick={() => { setMode(login ? "register" : "login"); setError(""); }}>
+            {login ? "Create an account" : "Sign in"}
           </button>
         </p>
-      </form>
+      </section>
     </main>
   );
 }
